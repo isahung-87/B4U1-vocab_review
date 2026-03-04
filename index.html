@@ -91,26 +91,26 @@
         <span id="message-text" class="leading-tight">歡迎來到單字射龍門！點擊「開始遊戲」發牌。</span>
     </div>
 
-    <!-- 遊戲桌面區 -->
-    <div class="shrink-0 w-full max-w-4xl bg-green-800 rounded-2xl p-4 md:p-6 border-4 md:border-8 border-green-950 shadow-2xl relative">
+    <!-- 遊戲桌面區 (卡牌放大版) -->
+    <div class="shrink-0 w-full max-w-4xl bg-green-800 rounded-2xl p-3 md:p-5 border-4 md:border-8 border-green-950 shadow-2xl relative">
         <div class="absolute inset-2 border border-green-700 rounded-xl pointer-events-none opacity-50"></div>
-        <div class="flex justify-center items-center space-x-3 md:space-x-10 relative z-10 min-h-[120px] md:min-h-[160px]">
+        <div class="flex justify-center items-center space-x-2 md:space-x-8 relative z-10 min-h-[140px] md:min-h-[200px]">
             <!-- 左牌 (柱子1) -->
             <div class="flex flex-col items-center">
                 <span class="text-green-300 font-semibold mb-1 text-[10px] md:text-sm tracking-widest">MIN</span>
-                <div id="card-left" class="w-16 h-24 md:w-24 md:h-36 rounded-xl bg-argyle border-2 md:border-4 border-slate-300 shadow-xl flex items-center justify-center">
-                    <div class="w-10 h-16 border-2 border-slate-400 rounded opacity-50 flex items-center justify-center">
-                        <span class="text-xl md:text-3xl text-slate-400">?</span>
+                <div id="card-left" class="w-20 h-32 md:w-32 md:h-48 rounded-xl bg-argyle border-2 md:border-4 border-slate-300 shadow-xl flex items-center justify-center">
+                    <div class="w-12 h-20 md:w-16 md:h-24 border-2 border-slate-400 rounded opacity-50 flex items-center justify-center">
+                        <span class="text-2xl md:text-4xl text-slate-400">?</span>
                     </div>
                 </div>
             </div>
 
             <!-- 中牌 (射門) -->
-            <div class="flex flex-col items-center transform translate-y-2 md:translate-y-4">
+            <div class="flex flex-col items-center transform translate-y-3 md:translate-y-5">
                 <span class="text-yellow-400 font-bold mb-1 text-[10px] md:text-sm tracking-widest animate-pulse">TARGET</span>
-                <div id="card-mid" class="w-16 h-24 md:w-24 md:h-36 rounded-xl bg-argyle border-2 md:border-4 border-slate-300 shadow-xl flex items-center justify-center">
-                    <div class="w-10 h-16 border-2 border-slate-400 rounded opacity-50 flex items-center justify-center">
-                        <span class="text-xl md:text-3xl text-slate-400">?</span>
+                <div id="card-mid" class="w-20 h-32 md:w-32 md:h-48 rounded-xl bg-argyle border-2 md:border-4 border-slate-300 shadow-xl flex items-center justify-center">
+                    <div class="w-12 h-20 md:w-16 md:h-24 border-2 border-slate-400 rounded opacity-50 flex items-center justify-center">
+                        <span class="text-2xl md:text-4xl text-slate-400">?</span>
                     </div>
                 </div>
             </div>
@@ -118,9 +118,9 @@
             <!-- 右牌 (柱子2) -->
             <div class="flex flex-col items-center">
                 <span class="text-green-300 font-semibold mb-1 text-[10px] md:text-sm tracking-widest">MAX</span>
-                <div id="card-right" class="w-16 h-24 md:w-24 md:h-36 rounded-xl bg-argyle border-2 md:border-4 border-slate-300 shadow-xl flex items-center justify-center">
-                    <div class="w-10 h-16 border-2 border-slate-400 rounded opacity-50 flex items-center justify-center">
-                        <span class="text-xl md:text-3xl text-slate-400">?</span>
+                <div id="card-right" class="w-20 h-32 md:w-32 md:h-48 rounded-xl bg-argyle border-2 md:border-4 border-slate-300 shadow-xl flex items-center justify-center">
+                    <div class="w-12 h-20 md:w-16 md:h-24 border-2 border-slate-400 rounded opacity-50 flex items-center justify-center">
+                        <span class="text-2xl md:text-4xl text-slate-400">?</span>
                     </div>
                 </div>
             </div>
@@ -130,54 +130,45 @@
     <!-- 動態操作區 -->
     <div id="action-area" class="flex-1 w-full max-w-4xl min-h-0 flex flex-col justify-start items-center pb-2">
         
-        <!-- 押注區 (預設隱藏) -->
-        <div id="betting-section" class="hidden w-full bg-white rounded-2xl shadow-xl p-4 flex-col items-center animate-fade-in-up mt-2">
-            <h2 class="text-base md:text-lg font-black text-slate-800 mb-2">💰 決定你的押注金額 💰</h2>
+        <!-- 押注區 (整齊網格置中版) -->
+        <div id="betting-section" class="hidden w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-5 flex-col items-center animate-fade-in-up mt-2">
+            <h2 class="text-base md:text-lg font-black text-slate-800 mb-3 text-center">💰 決定你的押注金額 💰</h2>
             
-            <div id="current-bet-display" class="text-4xl md:text-5xl font-black text-yellow-500 mb-3 drop-shadow-md">
+            <div id="current-bet-display" class="text-5xl md:text-6xl font-black text-yellow-500 mb-5 drop-shadow-md text-center w-full">
                 100
             </div>
             
-            <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-3">
-                <button onclick="adjustBet(-100)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-4 md:px-5 rounded-lg transition text-sm">- 100</button>
-                <button onclick="adjustBet(100)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-4 md:px-5 rounded-lg transition text-sm">+ 100</button>
+            <!-- 2x2 網格按鈕 -->
+            <div class="w-full grid grid-cols-2 gap-3 mb-5">
+                <button onclick="adjustBet(-100)" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 md:py-3 rounded-lg transition text-sm md:text-base border-b-4 border-slate-300 active:border-b-0 active:translate-y-1">- 100</button>
+                <button onclick="adjustBet(100)" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 md:py-3 rounded-lg transition text-sm md:text-base border-b-4 border-slate-300 active:border-b-0 active:translate-y-1">+ 100</button>
+                <button onclick="setBet('min')" class="w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold py-2 md:py-3 rounded-lg transition text-sm md:text-base border-b-4 border-blue-200 active:border-b-0 active:translate-y-1">最小 (100)</button>
+                <button onclick="setBet('max')" class="w-full bg-red-100 hover:bg-red-200 text-red-800 font-bold py-2 md:py-3 rounded-lg transition text-sm md:text-base border-b-4 border-red-200 active:border-b-0 active:translate-y-1 shadow-[0_0_10px_rgba(239,68,68,0.2)]">梭哈！(最大)</button>
             </div>
 
-            <div class="flex space-x-2 md:space-x-4 mb-3 md:mb-4">
-                <button onclick="setBet('min')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold py-1.5 px-4 md:px-5 rounded-lg transition text-sm">最小 (100)</button>
-                <button onclick="setBet('max')" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1.5 px-4 md:px-5 rounded-lg transition text-sm shadow-[0_0_10px_rgba(239,68,68,0.4)]">最大 (1000)</button>
-            </div>
-
-            <button onclick="confirmBet()" class="w-full md:w-2/3 bg-yellow-500 hover:bg-yellow-400 text-yellow-950 text-base md:text-lg py-2.5 rounded-xl font-black transition-colors shadow-lg">
+            <button onclick="confirmBet()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-yellow-950 text-base md:text-lg py-3 rounded-xl font-black transition-colors shadow-lg border-b-4 border-yellow-600 active:border-b-0 active:translate-y-1">
                 確認押注並挑戰單字
             </button>
         </div>
 
-        <!-- 單字測驗區 (預設隱藏) -->
+        <!-- 單字測驗區 -->
         <div id="quiz-section" class="hidden w-full bg-white rounded-2xl shadow-xl flex-col min-h-0 max-h-full animate-fade-in-up relative border-2 md:border-4 border-slate-800 mt-2">
-            
             <!-- 進度條倒數 -->
             <div id="timer-bar" class="absolute top-0 left-0 h-1 bg-red-500 transition-all duration-1000 ease-linear z-10 w-full"></div>
             
             <div class="shrink-0 bg-slate-800 p-2 md:p-3 text-center relative">
-                <!-- 倒數計時顯示 -->
                 <div id="timer-display-container" class="absolute top-2 right-2 flex items-center space-x-1 text-red-400 font-bold bg-slate-900 px-2 py-1 rounded-full shadow-inner text-[10px] md:text-xs">
                     <i id="timer-icon" class="fa-solid fa-stopwatch"></i>
                     <span id="timer-text">5s</span>
                 </div>
-
                 <h2 id="quiz-header-player" class="text-slate-400 text-[10px] md:text-xs font-bold tracking-widest mb-1 uppercase">玩家 1 的射門資格</h2>
-                <div id="quiz-word" class="text-xl md:text-3xl font-black text-white tracking-wide">
-                    Word
-                </div>
+                <div id="quiz-word" class="text-xl md:text-3xl font-black text-white tracking-wide">Word</div>
             </div>
 
             <!-- 選項區 -->
-            <div id="quiz-options" class="flex-1 overflow-y-auto hide-scrollbar p-2 md:p-3 grid grid-cols-1 md:grid-cols-2 gap-2 bg-slate-50">
-                <!-- 按鈕由 JS 生成 -->
-            </div>
+            <div id="quiz-options" class="flex-1 overflow-y-auto hide-scrollbar p-2 md:p-3 grid grid-cols-1 md:grid-cols-2 gap-2 bg-slate-50"></div>
 
-            <!-- 對完答案後的繼續按鈕 (預設隱藏) -->
+            <!-- 對完答案後的繼續按鈕 -->
             <div id="continue-section" class="hidden shrink-0 p-3 md:p-4 bg-white border-t-2 border-slate-100">
                 <button id="btn-continue" onclick="handleContinueAfterAnswer()" class="w-full py-3 rounded-xl font-bold text-base md:text-xl transition-colors text-white shadow-lg bg-green-600 hover:bg-green-500">
                     繼續
@@ -186,17 +177,12 @@
         </div>
     </div>
 
-    <!-- 遊戲結束結算畫面 (預設隱藏) -->
+    <!-- 遊戲結束結算畫面 -->
     <div id="game-over-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 animate-fade-in p-4">
         <div class="bg-white p-6 md:p-8 rounded-3xl text-center w-full max-w-md">
             <h2 class="text-3xl md:text-4xl font-black text-red-600 mb-2 md:mb-4">🏆 遊戲結束！</h2>
-            
             <p id="game-over-reason" class="text-slate-600 mb-2 text-base md:text-lg">原因</p>
-
-            <div id="game-over-winner" class="text-green-600 font-bold mb-6 text-xl md:text-2xl mt-4 bg-green-50 py-4 rounded-xl">
-                結果
-            </div>
-
+            <div id="game-over-winner" class="text-green-600 font-bold mb-6 text-xl md:text-2xl mt-4 bg-green-50 py-4 rounded-xl">結果</div>
             <button onclick="resetGame()" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 md:py-4 rounded-xl font-bold text-lg md:text-xl transition-colors shadow-lg">
                 重新開始雙人對戰
             </button>
@@ -204,36 +190,65 @@
     </div>
 
     <script>
+        // ---------------- 音效系統 (Web Audio API) ----------------
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, type = 'sine', duration = 0.1, vol = 0.1, delay = 0) {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+            
+            gainNode.gain.setValueAtTime(vol, audioCtx.currentTime + delay);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + delay + duration);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start(audioCtx.currentTime + delay);
+            oscillator.stop(audioCtx.currentTime + delay + duration);
+        }
+
+        const SoundFx = {
+            correct: () => {
+                playTone(523.25, 'sine', 0.1, 0.2, 0);   // C5
+                playTone(659.25, 'sine', 0.2, 0.2, 0.1); // E5
+            },
+            wrong: () => {
+                playTone(300, 'sawtooth', 0.2, 0.1, 0);
+                playTone(250, 'sawtooth', 0.3, 0.1, 0.15);
+            },
+            win: () => {
+                playTone(440, 'sine', 0.1, 0.2, 0);     // A4
+                playTone(554.37, 'sine', 0.1, 0.2, 0.1); // C#5
+                playTone(659.25, 'sine', 0.1, 0.2, 0.2); // E5
+                playTone(880, 'sine', 0.3, 0.2, 0.3);    // A5
+            },
+            crash: () => { // 撞柱的沉重打擊聲
+                playTone(150, 'square', 0.4, 0.2, 0);
+                playTone(100, 'sawtooth', 0.4, 0.3, 0);
+                playTone(50, 'square', 0.5, 0.3, 0.1);
+            }
+        };
+
         // ---------------- 遊戲資料 ----------------
         const defaultVocabList = [
-            { en: "individual", zh: "個別的；個人" },
-            { en: "record", zh: "錄影；錄音；記錄；紀錄" },
-            { en: "rearrange", zh: "重新安排；重新布置" },
-            { en: "arrange", zh: "安排；布置" },
-            { en: "seize", zh: "把握；抓住" },
-            { en: "intensive", zh: "密集的" },
-            { en: "typical", zh: "典型的" },
-            { en: "routine", zh: "例行公事" },
-            { en: "professional", zh: "職業的；專業的" },
-            { en: "electronic", zh: "電子的" },
-            { en: "advance", zh: "進步；進展" },
-            { en: "sufficient", zh: "足夠的" },
-            { en: "equipment", zh: "設備；裝備" },
-            { en: "equip", zh: "配備；裝備" },
-            { en: "ideal", zh: "理想的" },
-            { en: "broadcast", zh: "播送；廣播；（電視／廣播）節目" },
-            { en: "global", zh: "全球的；全世界的" },
-            { en: "overseas", zh: "海外地" },
-            { en: "sacrifice", zh: "犧牲" },
-            { en: "imagine", zh: "想像" },
-            { en: "imagination", zh: "想像力" },
-            { en: "have no choice but to", zh: "不得不" },
-            { en: "make it up to sb", zh: "補償某人" },
-            { en: "stand for", zh: "代表" },
-            { en: "key to", zh: "……的關鍵" },
-            { en: "make a living", zh: "謀生" },
-            { en: "as a matter of fact", zh: "其實；事實上" },
-            { en: "at least", zh: "至少" }
+            { en: "individual", zh: "個別的；個人" }, { en: "record", zh: "錄影；錄音；記錄；紀錄" },
+            { en: "rearrange", zh: "重新安排；重新布置" }, { en: "arrange", zh: "安排；布置" },
+            { en: "seize", zh: "把握；抓住" }, { en: "intensive", zh: "密集的" },
+            { en: "typical", zh: "典型的" }, { en: "routine", zh: "例行公事" },
+            { en: "professional", zh: "職業的；專業的" }, { en: "electronic", zh: "電子的" },
+            { en: "advance", zh: "進步；進展" }, { en: "sufficient", zh: "足夠的" },
+            { en: "equipment", zh: "設備；裝備" }, { en: "equip", zh: "配備；裝備" },
+            { en: "ideal", zh: "理想的" }, { en: "broadcast", zh: "播送；廣播；（電視／廣播）節目" },
+            { en: "global", zh: "全球的；全世界的" }, { en: "overseas", zh: "海外地" },
+            { en: "sacrifice", zh: "犧牲" }, { en: "imagine", zh: "想像" },
+            { en: "imagination", zh: "想像力" }, { en: "have no choice but to", zh: "不得不" },
+            { en: "make it up to sb", zh: "補償某人" }, { en: "stand for", zh: "代表" },
+            { en: "key to", zh: "……的關鍵" }, { en: "make a living", zh: "謀生" },
+            { en: "as a matter of fact", zh: "其實；事實上" }, { en: "at least", zh: "至少" }
         ];
 
         const suits = ['♠', '♥', '♦', '♣'];
@@ -245,62 +260,26 @@
         ];
 
         // ---------------- 遊戲狀態 ----------------
-        let p1Chips = 1000;
-        let p2Chips = 1000;
-        let currentPlayer = 1;
-        let currentBet = 100;
+        let p1Chips = 1000, p2Chips = 1000, currentPlayer = 1, currentBet = 100;
         let gameState = 'start'; // start, betting, quiz, answered, revealing, result
-        let cards = [null, null, null]; // 左, 右, 中
-        let currentQuestion = null;
-        let selectedAnswer = null;
-        let timeLeft = 5;
-        let currentTurn = 0;
+        let cards = [null, null, null];
+        let currentQuestion = null, selectedAnswer = null, timeLeft = 5, currentTurn = 0;
         const maxRounds = 10;
-        let narrowGapIndices = [];
-        let timerInterval;
-        let autoNextTurnTimeout;
+        let narrowGapIndices = [], timerInterval, autoNextTurnTimeout;
 
         // ---------------- DOM 元素 ----------------
-        const elP1Chips = document.getElementById('p1-chips');
-        const elP2Chips = document.getElementById('p2-chips');
-        const elP1Status = document.getElementById('p1-status');
-        const elP2Status = document.getElementById('p2-status');
-        
-        const elBtnStart = document.getElementById('btn-start-game');
-        const elBtnIcon = document.getElementById('btn-icon');
-        const elBtnText = document.getElementById('btn-text');
-        const elTurnDisplayStart = document.getElementById('turn-display-start');
-        const elTurnDisplayActive = document.getElementById('turn-display-active');
-        const elCurrentRoundText = document.getElementById('current-round-text');
-
-        const elMessageBox = document.getElementById('message-box');
-        const elMessageIcon = document.getElementById('message-icon');
-        const elMessageText = document.getElementById('message-text');
-
-        const elCardLeft = document.getElementById('card-left');
-        const elCardMid = document.getElementById('card-mid');
-        const elCardRight = document.getElementById('card-right');
-
-        const elBettingSection = document.getElementById('betting-section');
-        const elCurrentBetDisplay = document.getElementById('current-bet-display');
-
-        const elQuizSection = document.getElementById('quiz-section');
-        const elTimerBar = document.getElementById('timer-bar');
-        const elTimerDisplayContainer = document.getElementById('timer-display-container');
-        const elTimerText = document.getElementById('timer-text');
-        const elTimerIcon = document.getElementById('timer-icon');
-        const elQuizHeaderPlayer = document.getElementById('quiz-header-player');
-        const elQuizWord = document.getElementById('quiz-word');
-        const elQuizOptions = document.getElementById('quiz-options');
-        const elContinueSection = document.getElementById('continue-section');
-        const elBtnContinue = document.getElementById('btn-continue');
-
-        const elGameOverModal = document.getElementById('game-over-modal');
-        const elGameOverReason = document.getElementById('game-over-reason');
-        const elGameOverWinner = document.getElementById('game-over-winner');
+        const elP1Chips = document.getElementById('p1-chips'), elP2Chips = document.getElementById('p2-chips');
+        const elP1Status = document.getElementById('p1-status'), elP2Status = document.getElementById('p2-status');
+        const elBtnStart = document.getElementById('btn-start-game'), elBtnIcon = document.getElementById('btn-icon'), elBtnText = document.getElementById('btn-text');
+        const elTurnDisplayStart = document.getElementById('turn-display-start'), elTurnDisplayActive = document.getElementById('turn-display-active'), elCurrentRoundText = document.getElementById('current-round-text');
+        const elMessageBox = document.getElementById('message-box'), elMessageIcon = document.getElementById('message-icon'), elMessageText = document.getElementById('message-text');
+        const elCardLeft = document.getElementById('card-left'), elCardMid = document.getElementById('card-mid'), elCardRight = document.getElementById('card-right');
+        const elBettingSection = document.getElementById('betting-section'), elCurrentBetDisplay = document.getElementById('current-bet-display');
+        const elQuizSection = document.getElementById('quiz-section'), elTimerBar = document.getElementById('timer-bar'), elTimerDisplayContainer = document.getElementById('timer-display-container'), elTimerText = document.getElementById('timer-text'), elTimerIcon = document.getElementById('timer-icon'), elQuizHeaderPlayer = document.getElementById('quiz-header-player'), elQuizWord = document.getElementById('quiz-word'), elQuizOptions = document.getElementById('quiz-options');
+        const elContinueSection = document.getElementById('continue-section'), elBtnContinue = document.getElementById('btn-continue');
+        const elGameOverModal = document.getElementById('game-over-modal'), elGameOverReason = document.getElementById('game-over-reason'), elGameOverWinner = document.getElementById('game-over-winner');
 
         // ---------------- 核心函數 ----------------
-
         function getRandomCard() {
             const suit = suits[Math.floor(Math.random() * suits.length)];
             const valueObj = values[Math.floor(Math.random() * values.length)];
@@ -309,43 +288,26 @@
 
         function generateNarrowGapIndices() {
             const indices = new Set();
-            const count = Math.floor(Math.random() * 3) + 3; // 3~5次
-            while(indices.size < count) {
-                indices.add(Math.floor(Math.random() * (maxRounds * 2)));
-            }
+            const count = Math.floor(Math.random() * 3) + 3;
+            while(indices.size < count) indices.add(Math.floor(Math.random() * (maxRounds * 2)));
             return Array.from(indices);
         }
 
         function updateMessage(msg, type) {
             elMessageText.textContent = msg;
-            
-            // 移除舊顏色
-            elMessageBox.classList.remove('bg-blue-100', 'text-blue-800', 'border-blue-500', 
-                                          'bg-green-100', 'text-green-800', 'border-green-500',
-                                          'bg-red-100', 'text-red-800', 'border-red-500',
-                                          'bg-orange-100', 'text-orange-900', 'border-orange-500');
+            elMessageBox.classList.remove('bg-blue-100', 'text-blue-800', 'border-blue-500', 'bg-green-100', 'text-green-800', 'border-green-500', 'bg-red-100', 'text-red-800', 'border-red-500', 'bg-orange-100', 'text-orange-900', 'border-orange-500');
             elMessageIcon.className = "shrink-0 ";
 
-            if (type === 'info') {
-                elMessageBox.classList.add('bg-blue-100', 'text-blue-800', 'border-l-4', 'border-blue-500');
-                elMessageIcon.classList.add('fa-solid', 'fa-triangle-exclamation');
-            } else if (type === 'success') {
-                elMessageBox.classList.add('bg-green-100', 'text-green-800', 'border-l-4', 'border-green-500');
-                elMessageIcon.classList.add('fa-solid', 'fa-circle-check');
-            } else if (type === 'error') {
-                elMessageBox.classList.add('bg-red-100', 'text-red-800', 'border-l-4', 'border-red-500');
-                elMessageIcon.classList.add('fa-solid', 'fa-circle-xmark');
-            } else if (type === 'warning') {
-                elMessageBox.classList.add('bg-orange-100', 'text-orange-900', 'border-l-4', 'border-orange-500');
-                elMessageIcon.classList.add('fa-solid', 'fa-triangle-exclamation');
-            }
+            if (type === 'info') { elMessageBox.classList.add('bg-blue-100', 'text-blue-800', 'border-l-4', 'border-blue-500'); elMessageIcon.classList.add('fa-solid', 'fa-triangle-exclamation'); }
+            else if (type === 'success') { elMessageBox.classList.add('bg-green-100', 'text-green-800', 'border-l-4', 'border-green-500'); elMessageIcon.classList.add('fa-solid', 'fa-circle-check'); }
+            else if (type === 'error') { elMessageBox.classList.add('bg-red-100', 'text-red-800', 'border-l-4', 'border-red-500'); elMessageIcon.classList.add('fa-solid', 'fa-circle-xmark'); }
+            else if (type === 'warning') { elMessageBox.classList.add('bg-orange-100', 'text-orange-900', 'border-l-4', 'border-orange-500'); elMessageIcon.classList.add('fa-solid', 'fa-triangle-exclamation'); }
         }
 
         function updatePlayerStatus() {
             elP1Chips.textContent = p1Chips;
             elP2Chips.textContent = p2Chips;
 
-            // 處理玩家 1 樣式
             if (currentPlayer === 1) {
                 elP1Status.className = "flex-1 flex flex-col items-center justify-center p-1 md:p-2 rounded-lg border-2 transition-all border-yellow-400 bg-green-800 shadow-[0_0_15px_rgba(250,204,21,0.5)]";
                 elP2Status.className = "flex-1 flex flex-col items-center justify-center p-1 md:p-2 rounded-lg border-2 transition-all border-transparent opacity-60";
@@ -354,25 +316,15 @@
                 elP2Status.className = "flex-1 flex flex-col items-center justify-center p-1 md:p-2 rounded-lg border-2 transition-all border-yellow-400 bg-green-800 shadow-[0_0_15px_rgba(250,204,21,0.5)]";
             }
 
-            // 更新按鈕狀態
             if (gameState === 'start') {
-                elBtnStart.disabled = false;
-                elBtnIcon.className = "fa-solid fa-rotate animate-spin";
-                elBtnIcon.style.animationDuration = "3s";
-                elBtnText.textContent = "開始遊戲";
-                elTurnDisplayStart.classList.remove('hidden');
-                elTurnDisplayActive.classList.add('hidden');
+                elBtnStart.disabled = false; elBtnIcon.className = "fa-solid fa-rotate animate-spin"; elBtnIcon.style.animationDuration = "3s";
+                elBtnText.textContent = "開始遊戲"; elTurnDisplayStart.classList.remove('hidden'); elTurnDisplayActive.classList.add('hidden');
             } else if (gameState === 'result' && p1Chips > 0 && p2Chips > 0 && currentTurn < maxRounds * 2) {
-                elBtnStart.disabled = true;
-                elBtnIcon.className = "fa-solid fa-rotate animate-spin";
-                elBtnIcon.style.animationDuration = "1s";
+                elBtnStart.disabled = true; elBtnIcon.className = "fa-solid fa-rotate animate-spin"; elBtnIcon.style.animationDuration = "1s";
                 elBtnText.textContent = "自動換局中...";
             } else {
-                elBtnStart.disabled = true;
-                elBtnIcon.className = "fa-solid fa-rotate";
-                elBtnText.textContent = "進行中...";
-                elTurnDisplayStart.classList.add('hidden');
-                elTurnDisplayActive.classList.remove('hidden');
+                elBtnStart.disabled = true; elBtnIcon.className = "fa-solid fa-rotate";
+                elBtnText.textContent = "進行中..."; elTurnDisplayStart.classList.add('hidden'); elTurnDisplayActive.classList.remove('hidden');
                 elCurrentRoundText.textContent = Math.ceil(currentTurn / 2);
             }
         }
@@ -380,11 +332,11 @@
         function renderCard(cardData, containerElement, isHidden) {
             if (isHidden || !cardData) {
                 containerElement.innerHTML = `
-                    <div class="w-10 h-16 border-2 border-slate-400 rounded opacity-50 flex items-center justify-center">
-                        <span class="text-xl md:text-3xl text-slate-400">?</span>
+                    <div class="w-12 h-20 md:w-16 md:h-24 border-2 border-slate-400 rounded opacity-50 flex items-center justify-center">
+                        <span class="text-2xl md:text-4xl text-slate-400">?</span>
                     </div>
                 `;
-                containerElement.className = "w-16 h-24 md:w-24 md:h-36 rounded-xl bg-argyle border-2 md:border-4 border-slate-300 shadow-xl flex items-center justify-center";
+                containerElement.className = "w-20 h-32 md:w-32 md:h-48 rounded-xl bg-argyle border-2 md:border-4 border-slate-300 shadow-xl flex items-center justify-center";
                 return;
             }
 
@@ -392,28 +344,25 @@
             const colorClass = isRed ? 'text-red-600' : 'text-slate-800';
             
             containerElement.innerHTML = `
-                <div class="text-base md:text-2xl font-bold ${colorClass}">
-                    ${cardData.name} <span class="text-xs md:text-lg">${cardData.suit}</span>
+                <div class="text-lg md:text-3xl font-bold ${colorClass}">
+                    ${cardData.name} <span class="text-sm md:text-2xl">${cardData.suit}</span>
                 </div>
-                <div class="text-3xl md:text-5xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20 ${colorClass}">
+                <div class="text-4xl md:text-6xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20 ${colorClass}">
                     ${cardData.suit}
                 </div>
-                <div class="text-base md:text-2xl font-bold text-right rotate-180 ${colorClass}">
-                    ${cardData.name} <span class="text-xs md:text-lg">${cardData.suit}</span>
+                <div class="text-lg md:text-3xl font-bold text-right rotate-180 ${colorClass}">
+                    ${cardData.name} <span class="text-sm md:text-2xl">${cardData.suit}</span>
                 </div>
             `;
-            containerElement.className = "w-16 h-24 md:w-24 md:h-36 rounded-xl bg-white shadow-xl flex flex-col justify-between p-1 md:p-2 relative transform transition-transform hover:-translate-y-1";
+            containerElement.className = "w-20 h-32 md:w-32 md:h-48 rounded-xl bg-white shadow-xl flex flex-col justify-between p-2 md:p-3 relative transform transition-transform hover:-translate-y-1";
         }
 
         function updateUI() {
             updatePlayerStatus();
-            
-            // 更新卡牌
             renderCard(cards[0], elCardLeft, gameState === 'start');
             renderCard(cards[2], elCardMid, gameState !== 'result');
             renderCard(cards[1], elCardRight, gameState === 'start');
 
-            // 處理顯示區塊
             elBettingSection.classList.add('hidden');
             elQuizSection.classList.add('hidden');
             
@@ -424,7 +373,6 @@
                 elQuizSection.classList.remove('hidden');
                 renderQuizUI();
             }
-
             checkGameOver();
         }
 
@@ -432,23 +380,16 @@
             elQuizHeaderPlayer.textContent = `玩家 ${currentPlayer} 的射門資格`;
             elQuizWord.textContent = currentQuestion.word;
             
-            // 計時器顯示
             if (gameState === 'quiz') {
                 elTimerBar.style.width = `${(timeLeft / 5) * 100}%`;
                 elTimerDisplayContainer.classList.remove('hidden');
                 elTimerText.textContent = `${timeLeft}s`;
-                if (timeLeft <= 2) {
-                    elTimerIcon.classList.add('animate-pulse-fast', 'text-red-500');
-                    elTimerText.classList.add('text-red-500');
-                } else {
-                    elTimerIcon.classList.remove('animate-pulse-fast', 'text-red-500');
-                    elTimerText.classList.remove('text-red-500');
-                }
+                if (timeLeft <= 2) { elTimerIcon.classList.add('animate-pulse-fast', 'text-red-500'); elTimerText.classList.add('text-red-500'); } 
+                else { elTimerIcon.classList.remove('animate-pulse-fast', 'text-red-500'); elTimerText.classList.remove('text-red-500'); }
                 elContinueSection.classList.add('hidden');
             } else {
                 elTimerDisplayContainer.classList.add('hidden');
                 elContinueSection.classList.remove('hidden');
-                
                 if (selectedAnswer === currentQuestion.correctAnswer) {
                     elBtnContinue.className = "w-full py-3 rounded-xl font-bold text-base md:text-xl transition-colors text-white shadow-lg bg-green-600 hover:bg-green-500";
                     elBtnContinue.textContent = "答對了！點擊準備射門 ⚽";
@@ -458,25 +399,19 @@
                 }
             }
 
-            // 選項按鈕
             elQuizOptions.innerHTML = '';
             currentQuestion.options.forEach((option, index) => {
                 const btn = document.createElement('button');
-                const char = String.fromCharCode(65 + index); // A, B, C, D
+                const char = String.fromCharCode(65 + index);
                 
                 let btnClass = "w-full p-2 md:p-3 text-left text-sm md:text-base font-bold bg-white border-2 rounded-xl transition-all shadow-sm flex items-center space-x-2 group";
                 let circleClass = "shrink-0 w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm transition-colors ";
 
                 if (gameState === 'answered') {
-                    btn.disabled = true;
-                    circleClass += "bg-white/20";
-                    if (option === currentQuestion.correctAnswer) {
-                        btnClass += " border-green-500 bg-green-500 text-white";
-                    } else if (option === selectedAnswer) {
-                        btnClass += " border-red-500 bg-red-500 text-white";
-                    } else {
-                        btnClass += " border-slate-200 text-slate-400 opacity-50";
-                    }
+                    btn.disabled = true; circleClass += "bg-white/20";
+                    if (option === currentQuestion.correctAnswer) btnClass += " border-green-500 bg-green-500 text-white";
+                    else if (option === selectedAnswer) btnClass += " border-red-500 bg-red-500 text-white";
+                    else btnClass += " border-slate-200 text-slate-400 opacity-50";
                 } else {
                     btnClass += " border-slate-200 text-slate-700 hover:border-blue-500 hover:bg-blue-50";
                     circleClass += "bg-slate-100 text-slate-500 group-hover:bg-blue-500 group-hover:text-white";
@@ -484,17 +419,14 @@
                 }
 
                 btn.className = btnClass;
-                btn.innerHTML = `
-                    <div class="${circleClass}">${char}</div>
-                    <span class="leading-snug">${option}</span>
-                `;
+                btn.innerHTML = `<div class="${circleClass}">${char}</div><span class="leading-snug">${option}</span>`;
                 elQuizOptions.appendChild(btn);
             });
         }
 
         // ---------------- 遊戲邏輯 ----------------
-
-        function startGame() {
+        window.startGame = function() {
+            if (audioCtx.state === 'suspended') audioCtx.resume(); // 初始化音訊環境
             if (gameState !== 'start') return;
             narrowGapIndices = generateNarrowGapIndices();
             dealCards(1);
@@ -502,222 +434,146 @@
 
         function dealCards(playerToDeal) {
             clearTimeout(autoNextTurnTimeout);
-            
-            let card1, card2;
-            let valid = false;
+            let card1, card2, valid = false;
             const isNarrowGap = narrowGapIndices.includes(currentTurn);
 
             while (!valid) {
-                card1 = getRandomCard();
-                card2 = getRandomCard();
+                card1 = getRandomCard(); card2 = getRandomCard();
                 const diff = Math.abs(card1.val - card2.val);
-                if (isNarrowGap) {
-                    if (diff === 1 || diff === 2) valid = true;
-                } else {
-                    if (diff >= 3) valid = true;
-                }
+                if (isNarrowGap) { if (diff === 1 || diff === 2) valid = true; } 
+                else { if (diff >= 3) valid = true; }
             }
 
-            if (card1.val > card2.val) {
-                const temp = card1;
-                card1 = card2;
-                card2 = temp;
-            }
+            if (card1.val > card2.val) { const temp = card1; card1 = card2; card2 = temp; }
 
-            cards = [card1, card2, null];
-            selectedAnswer = null;
-            gameState = 'betting';
-            currentPlayer = playerToDeal;
-            currentTurn++;
+            cards = [card1, card2, null]; selectedAnswer = null; gameState = 'betting';
+            currentPlayer = playerToDeal; currentTurn++;
 
             const maxChips = currentPlayer === 1 ? p1Chips : p2Chips;
             currentBet = Math.min(100, maxChips);
 
-            updateMessage(`【玩家 ${playerToDeal}】你的龍門是 ${card1.name} 到 ${card2.name}。請先決定這回合的押注金額！`, 'info');
+            updateMessage(`【玩家 ${playerToDeal}】你的龍門是 ${card1.name} 到 ${card2.name}。請決定押注金額！`, 'info');
             updateUI();
         }
 
-        // 押注調整
         window.adjustBet = function(amount) {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
             const maxChips = currentPlayer === 1 ? p1Chips : p2Chips;
-            const minAllowed = Math.min(100, maxChips);
-            const maxAllowed = Math.min(1000, maxChips);
-            
+            const minAllowed = Math.min(100, maxChips), maxAllowed = Math.min(1000, maxChips);
             let newBet = currentBet + amount;
             if (newBet < minAllowed) newBet = minAllowed;
             if (newBet > maxAllowed) newBet = maxAllowed;
-            
-            currentBet = newBet;
-            elCurrentBetDisplay.textContent = currentBet;
+            currentBet = newBet; elCurrentBetDisplay.textContent = currentBet;
         };
 
         window.setBet = function(type) {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
             const maxChips = currentPlayer === 1 ? p1Chips : p2Chips;
-            if (type === 'min') {
-                currentBet = Math.min(100, maxChips);
-            } else if (type === 'max') {
-                currentBet = Math.min(1000, maxChips);
-            }
+            if (type === 'min') currentBet = Math.min(100, maxChips);
+            else if (type === 'max') currentBet = Math.min(1000, maxChips);
             elCurrentBetDisplay.textContent = currentBet;
         };
 
         window.confirmBet = function() {
-            generateQuiz();
-            selectedAnswer = null;
-            timeLeft = 5;
-            gameState = 'quiz';
-            updateMessage(`【玩家 ${currentPlayer}】已押注 ${currentBet} 籌碼！請在 5 秒內答對單字題！`, 'info');
-            updateUI();
-            startTimer();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            generateQuiz(); selectedAnswer = null; timeLeft = 5; gameState = 'quiz';
+            updateMessage(`已押注 ${currentBet} 籌碼！請在 5 秒內答對單字題！`, 'info');
+            updateUI(); startTimer();
         };
 
         function generateQuiz() {
             const targetVocab = defaultVocabList[Math.floor(Math.random() * defaultVocabList.length)];
             let options = [targetVocab.zh];
-            
             while (options.length < 4) {
                 const randomWrong = defaultVocabList[Math.floor(Math.random() * defaultVocabList.length)].zh;
-                if (!options.includes(randomWrong)) {
-                    options.push(randomWrong);
-                }
+                if (!options.includes(randomWrong)) options.push(randomWrong);
             }
             options = options.sort(() => Math.random() - 0.5);
-            
-            currentQuestion = {
-                word: targetVocab.en,
-                correctAnswer: targetVocab.zh,
-                options: options
-            };
+            currentQuestion = { word: targetVocab.en, correctAnswer: targetVocab.zh, options: options };
         }
 
         function startTimer() {
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
-                timeLeft--;
-                updateUI();
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    if(gameState === 'quiz') {
-                        handleAnswer(null); // 超時
-                    }
-                }
+                timeLeft--; updateUI();
+                if (timeLeft <= 0) { clearInterval(timerInterval); if(gameState === 'quiz') handleAnswer(null); }
             }, 1000);
         }
 
         window.handleAnswer = function(selectedOption) {
-            clearInterval(timerInterval);
-            selectedAnswer = selectedOption;
-            gameState = 'answered';
+            clearInterval(timerInterval); selectedAnswer = selectedOption; gameState = 'answered';
 
             if (selectedOption === currentQuestion.correctAnswer) {
-                updateMessage(`【玩家 ${currentPlayer}】答對了！✅ 請查看單字，然後準備射門！`, 'success');
+                SoundFx.correct(); // 播放答對音效
+                updateMessage(`答對了！✅ 請準備射門！`, 'success');
             } else {
+                SoundFx.wrong(); // 播放答錯音效
                 const failReason = selectedOption === null ? "時間到！⏳" : "答錯了！❌";
-                updateMessage(`【玩家 ${currentPlayer}】${failReason} 正確答案是「${currentQuestion.correctAnswer}」。`, 'error');
+                updateMessage(`${failReason} 正確答案是「${currentQuestion.correctAnswer}」。`, 'error');
             }
             updateUI();
         };
 
         window.handleContinueAfterAnswer = function() {
             if (selectedAnswer === currentQuestion.correctAnswer) {
-                gameState = 'revealing';
-                updateMessage(`【玩家 ${currentPlayer}】準備翻開第三張牌...`, 'info');
-                updateUI();
-                setTimeout(() => {
-                    shootGate();
-                }, 600);
+                gameState = 'revealing'; updateMessage(`準備翻開第三張牌...`, 'info'); updateUI();
+                setTimeout(() => { shootGate(); }, 600);
             } else {
-                if (currentPlayer === 1) p1Chips -= currentBet;
-                else p2Chips -= currentBet;
-
+                if (currentPlayer === 1) p1Chips -= currentBet; else p2Chips -= currentBet;
                 gameState = 'result';
                 const failReason = selectedAnswer === null ? "時間到！⏳" : "答錯了！❌";
-                updateMessage(`【玩家 ${currentPlayer}】${failReason} 喪失射門資格，沒收押注 ${currentBet} 籌碼。`, 'error');
-                updateUI();
-                triggerNextTurn();
+                updateMessage(`${failReason} 喪失射門資格，沒收押注 ${currentBet} 籌碼。`, 'error');
+                updateUI(); triggerNextTurn();
             }
         };
 
         function shootGate() {
-            const thirdCard = getRandomCard();
-            cards[2] = thirdCard;
-
-            const leftVal = cards[0].val;
-            const rightVal = cards[1].val;
-            const midVal = thirdCard.val;
-
-            let resultMsg = "";
-            let msgType = "info";
+            const thirdCard = getRandomCard(); cards[2] = thirdCard;
+            const leftVal = cards[0].val, rightVal = cards[1].val, midVal = thirdCard.val;
+            let resultMsg = "", msgType = "info";
 
             if (midVal === leftVal || midVal === rightVal) {
-                if (currentPlayer === 1) p1Chips -= (currentBet * 2);
-                else p2Chips -= (currentBet * 2);
-                resultMsg = `💥 撞柱啦 (Hit the Post)！第三張牌是 ${thirdCard.name}。雙倍懲罰，扣 ${currentBet * 2} 籌碼！`;
-                msgType = 'warning';
+                SoundFx.crash(); // 播放撞柱音效
+                if (currentPlayer === 1) p1Chips -= (currentBet * 2); else p2Chips -= (currentBet * 2);
+                resultMsg = `💥 撞柱啦 (Hit the Post)！第三張牌是 ${thirdCard.name}。雙倍懲罰，扣 ${currentBet * 2} 籌碼！`; msgType = 'warning';
             } else if (midVal > leftVal && midVal < rightVal) {
-                if (currentPlayer === 1) p1Chips += currentBet;
-                else p2Chips += currentBet;
-                resultMsg = `🎉 漂亮進洞 (In Between)！贏得 ${currentBet} 籌碼！`;
-                msgType = 'success';
+                SoundFx.win(); // 播放贏錢音效
+                if (currentPlayer === 1) p1Chips += currentBet; else p2Chips += currentBet;
+                resultMsg = `🎉 漂亮進洞 (In Between)！贏得 ${currentBet} 籌碼！`; msgType = 'success';
             } else {
-                if (currentPlayer === 1) p1Chips -= currentBet;
-                else p2Chips -= currentBet;
-                resultMsg = `😢 射偏了 (Outside)！扣除 ${currentBet} 籌碼。`;
-                msgType = 'error';
+                SoundFx.wrong(); // 播放射偏音效
+                if (currentPlayer === 1) p1Chips -= currentBet; else p2Chips -= currentBet;
+                resultMsg = `😢 射偏了 (Outside)！扣除 ${currentBet} 籌碼。`; msgType = 'error';
             }
             
-            gameState = 'result';
-            updateMessage(`【玩家 ${currentPlayer}】${resultMsg}`, msgType);
-            updateUI();
-            triggerNextTurn();
+            gameState = 'result'; updateMessage(`【玩家 ${currentPlayer}】${resultMsg}`, msgType);
+            updateUI(); triggerNextTurn();
         }
 
         function triggerNextTurn() {
             if (p1Chips > 0 && p2Chips > 0 && currentTurn < maxRounds * 2) {
-                autoNextTurnTimeout = setTimeout(() => {
-                    const nextPlayer = currentPlayer === 1 ? 2 : 1;
-                    dealCards(nextPlayer);
-                }, 3000);
+                autoNextTurnTimeout = setTimeout(() => { dealCards(currentPlayer === 1 ? 2 : 1); }, 3000);
             }
         }
 
         function checkGameOver() {
             if (gameState === 'result' && (p1Chips <= 0 || p2Chips <= 0 || currentTurn >= maxRounds * 2)) {
                 elGameOverModal.classList.remove('hidden');
-                
-                if (p1Chips <= 0 || p2Chips <= 0) {
-                    elGameOverReason.textContent = `${p1Chips <= 0 ? '玩家 1' : '玩家 2'} 破產了！把籌碼輸光光啦！`;
-                } else {
-                    elGameOverReason.textContent = `已達到最大局數限制 (${maxRounds} 局)！`;
-                }
+                if (p1Chips <= 0 || p2Chips <= 0) elGameOverReason.textContent = `${p1Chips <= 0 ? '玩家 1' : '玩家 2'} 破產了！把籌碼輸光光啦！`;
+                else elGameOverReason.textContent = `已達到最大局數限制 (${maxRounds} 局)！`;
 
-                if (p1Chips === p2Chips) {
-                    elGameOverWinner.innerHTML = `<span>🤝 雙方籌碼相同，平手！ 🤝</span>`;
-                } else {
-                    elGameOverWinner.innerHTML = `<span>🎉 恭喜 ${p1Chips > p2Chips ? '玩家 1' : '玩家 2'} 獲勝！ 🎉</span>`;
-                }
-            } else {
-                elGameOverModal.classList.add('hidden');
-            }
+                if (p1Chips === p2Chips) elGameOverWinner.innerHTML = `<span>🤝 雙方籌碼相同，平手！ 🤝</span>`;
+                else elGameOverWinner.innerHTML = `<span>🎉 恭喜 ${p1Chips > p2Chips ? '玩家 1' : '玩家 2'} 獲勝！ 🎉</span>`;
+            } else { elGameOverModal.classList.add('hidden'); }
         }
 
         window.resetGame = function() {
-            p1Chips = 1000;
-            p2Chips = 1000;
-            currentPlayer = 1;
-            currentTurn = 0;
-            gameState = 'start';
-            cards = [null, null, null];
-            selectedAnswer = null;
-            clearInterval(timerInterval);
-            clearTimeout(autoNextTurnTimeout);
-            
+            p1Chips = 1000; p2Chips = 1000; currentPlayer = 1; currentTurn = 0; gameState = 'start';
+            cards = [null, null, null]; selectedAnswer = null; clearInterval(timerInterval); clearTimeout(autoNextTurnTimeout);
             updateMessage("新遊戲開始！雙方各拿到 1000 籌碼。請點擊「開始遊戲」。", 'info');
-            elGameOverModal.classList.add('hidden');
-            updateUI();
+            elGameOverModal.classList.add('hidden'); updateUI();
         };
 
-        // 初始化
         updateUI();
     </script>
 </body>
