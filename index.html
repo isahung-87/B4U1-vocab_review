@@ -1,0 +1,539 @@
+import React, { useState, useEffect } from 'react';
+import { RefreshCw, Coins, AlertTriangle, CheckCircle2, XCircle, Users, Timer } from 'lucide-react';
+
+// 內建高中核心單字庫 (可替換為使用者的清單)
+const defaultVocabList = [
+  { en: "individual", zh: "個別的；個人" },
+  { en: "record", zh: "錄影；錄音；記錄；紀錄" },
+  { en: "rearrange", zh: "重新安排；重新布置" },
+  { en: "arrange", zh: "安排；布置" },
+  { en: "seize", zh: "把握；抓住" },
+  { en: "intensive", zh: "密集的" },
+  { en: "typical", zh: "典型的" },
+  { en: "routine", zh: "例行公事" },
+  { en: "professional", zh: "職業的；專業的" },
+  { en: "electronic", zh: "電子的" },
+  { en: "advance", zh: "進步；進展" },
+  { en: "sufficient", zh: "足夠的" },
+  { en: "equipment", zh: "設備；裝備" },
+  { en: "equip", zh: "配備；裝備" },
+  { en: "ideal", zh: "理想的" },
+  { en: "broadcast", zh: "播送；廣播；（電視／廣播）節目" },
+  { en: "global", zh: "全球的；全世界的" },
+  { en: "overseas", zh: "海外地" },
+  { en: "sacrifice", zh: "犧牲" },
+  { en: "imagine", zh: "想像" },
+  { en: "imagination", zh: "想像力" },
+  { en: "have no choice but to", zh: "不得不" },
+  { en: "make it up to sb", zh: "補償某人" },
+  { en: "stand for", zh: "代表" },
+  { en: "key to", zh: "……的關鍵" },
+  { en: "make a living", zh: "謀生" },
+  { en: "as a matter of fact", zh: "其實；事實上" },
+  { en: "at least", zh: "至少" }
+];
+
+const suits = ['♠', '♥', '♦', '♣'];
+const values = [
+  { name: '2', val: 2 }, { name: '3', val: 3 }, { name: '4', val: 4 },
+  { name: '5', val: 5 }, { name: '6', val: 6 }, { name: '7', val: 7 },
+  { name: '8', val: 8 }, { name: '9', val: 9 }, { name: '10', val: 10 },
+  { name: 'J', val: 11 }, { name: 'Q', val: 12 }, { name: 'K', val: 13 }, { name: 'A', val: 14 }
+];
+
+// 產生隨機撲克牌
+const getRandomCard = () => {
+  const suit = suits[Math.floor(Math.random() * suits.length)];
+  const valueObj = values[Math.floor(Math.random() * values.length)];
+  return { suit, name: valueObj.name, val: valueObj.val };
+};
+
+export default function ShootTheGateGame() {
+  const [p1Chips, setP1Chips] = useState(1000);
+  const [p2Chips, setP2Chips] = useState(1000);
+  const [currentPlayer, setCurrentPlayer] = useState(1);
+  const [currentBet, setCurrentBet] = useState(100);
+  const [cards, setCards] = useState([null, null, null]); // 左, 右, 中
+  const [gameState, setGameState] = useState('start'); // start, betting, quiz, answered, revealing, result
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(null); // 紀錄玩家選的答案
+  const [message, setMessage] = useState("歡迎來到單字射龍門！點擊「開始遊戲」發牌。");
+  const [messageType, setMessageType] = useState('info'); // info, success, error, warning
+  const [timeLeft, setTimeLeft] = useState(5); // 單字測驗倒數計時
+  const [currentTurn, setCurrentTurn] = useState(0); // 紀錄當前總回合數
+  const maxRounds = 10; // 固定最大局數為 10 局
+
+  // 隨機產生 3~5 次「刺激窄門」(差距1~2) 的回合索引
+  const generateNarrowGapIndices = () => {
+    const indices = new Set();
+    const count = Math.floor(Math.random() * 3) + 3; // 至少 3 次 (3~5次)
+    while(indices.size < count) {
+      indices.add(Math.floor(Math.random() * (maxRounds * 2)));
+    }
+    return Array.from(indices);
+  };
+  
+  const [narrowGapIndices, setNarrowGapIndices] = useState(generateNarrowGapIndices);
+
+  // 自動換局邏輯
+  useEffect(() => {
+    let timer;
+    if (gameState === 'result' && p1Chips > 0 && p2Chips > 0 && currentTurn < maxRounds * 2) {
+      timer = setTimeout(() => {
+        const nextPlayer = currentPlayer === 1 ? 2 : 1;
+        dealCards(nextPlayer);
+      }, 3000); // 3秒後自動換人發牌
+    }
+    return () => clearTimeout(timer);
+  }, [gameState, p1Chips, p2Chips, currentPlayer, currentTurn, maxRounds]);
+
+  // 單字測驗倒數計時邏輯
+  useEffect(() => {
+    let timer;
+    if (gameState === 'quiz' && timeLeft > 0) {
+      timer = setTimeout(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 1000);
+    } else if (gameState === 'quiz' && timeLeft === 0) {
+      // 時間到，自動視為答錯
+      handleAnswer(null);
+    }
+    return () => clearTimeout(timer);
+  }, [gameState, timeLeft]);
+
+  // 發牌邏輯
+  const dealCards = (playerToDeal) => {
+    let card1, card2;
+    let valid = false;
+    
+    const isNarrowGap = narrowGapIndices.includes(currentTurn);
+
+    while (!valid) {
+      card1 = getRandomCard();
+      card2 = getRandomCard();
+      const diff = Math.abs(card1.val - card2.val);
+      
+      if (isNarrowGap) {
+        if (diff === 1 || diff === 2) valid = true;
+      } else {
+        if (diff >= 3) valid = true;
+      }
+    }
+
+    if (card1.val > card2.val) {
+      const temp = card1;
+      card1 = card2;
+      card2 = temp;
+    }
+
+    setCards([card1, card2, null]);
+    setSelectedAnswer(null); // 重置選擇
+    setGameState('betting');
+    setCurrentPlayer(playerToDeal);
+    setCurrentTurn(prev => prev + 1); 
+    
+    const maxChips = playerToDeal === 1 ? p1Chips : p2Chips;
+    setCurrentBet(Math.min(100, maxChips)); 
+    setMessage(`【玩家 ${playerToDeal}】你的龍門是 ${card1.name} 到 ${card2.name}。請先決定這回合的押注金額！`);
+    setMessageType('info');
+  };
+
+  // 確認押注並產生單字問題
+  const confirmBet = () => {
+    generateQuiz();
+    setSelectedAnswer(null);
+    setTimeLeft(5); 
+    setGameState('quiz');
+    setMessage(`【玩家 ${currentPlayer}】已押注 ${currentBet} 籌碼！請在 5 秒內答對單字題！`);
+    setMessageType('info');
+  };
+
+  // 產生單字問題
+  const generateQuiz = () => {
+    const targetVocab = defaultVocabList[Math.floor(Math.random() * defaultVocabList.length)];
+    
+    let options = [targetVocab.zh];
+    while (options.length < 4) {
+      const randomWrong = defaultVocabList[Math.floor(Math.random() * defaultVocabList.length)].zh;
+      if (!options.includes(randomWrong)) {
+        options.push(randomWrong);
+      }
+    }
+    
+    options = options.sort(() => Math.random() - 0.5);
+    
+    setCurrentQuestion({
+      word: targetVocab.en,
+      correctAnswer: targetVocab.zh,
+      options: options
+    });
+  };
+
+  // 處理玩家答題 (新增停留狀態)
+  const handleAnswer = (selectedOption) => {
+    setSelectedAnswer(selectedOption);
+    setGameState('answered'); // 進入對答案狀態，不馬上跳轉
+
+    if (selectedOption === currentQuestion.correctAnswer) {
+      setMessage(`【玩家 ${currentPlayer}】答對了！✅ 請查看單字，然後準備射門！`);
+      setMessageType('success');
+    } else {
+      const failReason = selectedOption === null ? "時間到！⏳" : "答錯了！❌";
+      setMessage(`【玩家 ${currentPlayer}】${failReason} 正確答案是「${currentQuestion.correctAnswer}」。`);
+      setMessageType('error');
+    }
+  };
+
+  // 觀看答案後的繼續動作
+  const handleContinueAfterAnswer = () => {
+    if (selectedAnswer === currentQuestion.correctAnswer) {
+      // 答對，繼續去射門
+      setGameState('revealing');
+      setMessage(`【玩家 ${currentPlayer}】準備翻開第三張牌...`);
+      setMessageType('info');
+      setTimeout(() => {
+        shootGate();
+      }, 600);
+    } else {
+      // 答錯，直接結算扣錢
+      if (currentPlayer === 1) setP1Chips(prev => prev - currentBet);
+      else setP2Chips(prev => prev - currentBet);
+
+      setGameState('result');
+      const failReason = selectedAnswer === null ? "時間到！⏳" : "答錯了！❌";
+      setMessage(`【玩家 ${currentPlayer}】${failReason} 喪失射門資格，沒收押注 ${currentBet} 籌碼。`);
+      setMessageType('error');
+    }
+  };
+
+  // 翻第三張牌並判定結果
+  const shootGate = () => {
+    const thirdCard = getRandomCard();
+    const newCards = [...cards];
+    newCards[2] = thirdCard;
+    setCards(newCards);
+
+    const leftVal = newCards[0].val;
+    const rightVal = newCards[1].val;
+    const midVal = thirdCard.val;
+
+    let resultMsg = "";
+    let msgType = "info";
+
+    if (midVal === leftVal || midVal === rightVal) {
+      if (currentPlayer === 1) setP1Chips(prev => prev - (currentBet * 2));
+      else setP2Chips(prev => prev - (currentBet * 2));
+      resultMsg = `💥 撞柱啦 (Hit the Post)！第三張牌是 ${thirdCard.name}。雙倍懲罰，扣 ${currentBet * 2} 籌碼！`;
+      msgType = 'warning';
+    } else if (midVal > leftVal && midVal < rightVal) {
+      if (currentPlayer === 1) setP1Chips(prev => prev + currentBet);
+      else setP2Chips(prev => prev + currentBet);
+      resultMsg = `🎉 漂亮進洞 (In Between)！贏得 ${currentBet} 籌碼！`;
+      msgType = 'success';
+    } else {
+      if (currentPlayer === 1) setP1Chips(prev => prev - currentBet);
+      else setP2Chips(prev => prev - currentBet);
+      resultMsg = `😢 射偏了 (Outside)！扣除 ${currentBet} 籌碼。`;
+      msgType = 'error';
+    }
+    
+    setMessage(`【玩家 ${currentPlayer}】${resultMsg}`);
+    setMessageType(msgType);
+    setGameState('result');
+  };
+
+  // 撲克牌 UI 元件 (縮小以適應滿版螢幕)
+  const CardUI = ({ card, hidden }) => {
+    if (hidden || !card) {
+      return (
+        <div className="w-16 h-24 md:w-24 md:h-36 rounded-xl bg-slate-200 border-2 md:border-4 border-slate-300 shadow-xl flex items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/argyle.png')]">
+          <div className="w-10 h-16 border-2 border-slate-400 rounded opacity-50 flex items-center justify-center">
+            <span className="text-xl md:text-3xl text-slate-400">?</span>
+          </div>
+        </div>
+      );
+    }
+
+    const isRed = card.suit === '♥' || card.suit === '♦';
+    return (
+      <div className="w-16 h-24 md:w-24 md:h-36 rounded-xl bg-white shadow-xl flex flex-col justify-between p-1 md:p-2 relative transform transition-transform hover:-translate-y-1">
+        <div className={`text-base md:text-2xl font-bold ${isRed ? 'text-red-600' : 'text-slate-800'}`}>
+          {card.name} <span className="text-xs md:text-lg">{card.suit}</span>
+        </div>
+        <div className={`text-3xl md:text-5xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20 ${isRed ? 'text-red-600' : 'text-slate-800'}`}>
+          {card.suit}
+        </div>
+        <div className={`text-base md:text-2xl font-bold text-right rotate-180 ${isRed ? 'text-red-600' : 'text-slate-800'}`}>
+          {card.name} <span className="text-xs md:text-lg">{card.suit}</span>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    // 使用 h-[100dvh] 和 overflow-hidden 確保畫面固定不滾動
+    <div className="h-[100dvh] w-full bg-green-900 font-sans p-2 md:p-4 flex flex-col items-center overflow-hidden gap-2 md:gap-3 box-border">
+      
+      {/* 頂部資訊列 (固定不變) */}
+      <div className="shrink-0 w-full max-w-4xl flex justify-between items-center bg-green-950 p-2 md:p-3 rounded-xl shadow-lg border border-green-800 gap-2">
+        
+        {/* 玩家 1 狀態 */}
+        <div className={`flex-1 flex flex-col items-center justify-center p-1 md:p-2 rounded-lg border-2 transition-all ${currentPlayer === 1 ? 'border-yellow-400 bg-green-800 shadow-[0_0_15px_rgba(250,204,21,0.5)]' : 'border-transparent opacity-60'}`}>
+          <span className="text-white font-bold mb-1 flex items-center gap-1 text-xs md:text-sm"><Users size={14}/> 玩家 1</span>
+          <div className="flex items-center space-x-1 text-yellow-400">
+            <Coins size={18} />
+            <span className="text-lg md:text-xl font-black tracking-wider">{p1Chips}</span>
+          </div>
+        </div>
+
+        {/* 中央控制 */}
+        <div className="flex flex-col items-center justify-center px-1 md:px-4">
+          <h1 className="text-white text-sm md:text-xl font-bold tracking-widest hidden md:block mb-1 whitespace-nowrap">
+            ♠♥ 雙人對戰射龍門 ♦♣
+          </h1>
+          
+          {gameState === 'start' ? (
+            <div className="mb-1 text-green-300 text-xs font-bold bg-green-900 px-3 py-1 rounded-full shadow-inner whitespace-nowrap">
+              雙人對戰 (10局)
+            </div>
+          ) : (
+            <div className="text-yellow-400 font-bold mb-1 bg-green-900 px-3 py-1 rounded-full shadow-inner text-xs whitespace-nowrap">
+              第 {Math.ceil(currentTurn / 2)} / {maxRounds} 局
+            </div>
+          )}
+
+          <button 
+            onClick={() => dealCards(1)}
+            disabled={gameState !== 'start'}
+            className="flex items-center space-x-1 bg-yellow-500 hover:bg-yellow-400 text-yellow-950 px-3 py-1.5 md:px-6 md:py-2 rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap shadow-lg text-xs md:text-base"
+          >
+            <RefreshCw size={16} className={gameState === 'start' ? 'animate-spin-slow' : gameState === 'result' && currentTurn < maxRounds * 2 ? 'animate-spin' : ''} />
+            <span>
+              {gameState === 'start' ? '開始遊戲' : gameState === 'result' && p1Chips > 0 && p2Chips > 0 && currentTurn < maxRounds * 2 ? '自動換局中...' : '進行中...'}
+            </span>
+          </button>
+        </div>
+
+        {/* 玩家 2 狀態 */}
+        <div className={`flex-1 flex flex-col items-center justify-center p-1 md:p-2 rounded-lg border-2 transition-all ${currentPlayer === 2 ? 'border-yellow-400 bg-green-800 shadow-[0_0_15px_rgba(250,204,21,0.5)]' : 'border-transparent opacity-60'}`}>
+          <span className="text-white font-bold mb-1 flex items-center gap-1 text-xs md:text-sm"><Users size={14}/> 玩家 2</span>
+          <div className="flex items-center space-x-1 text-yellow-400">
+            <Coins size={18} />
+            <span className="text-lg md:text-xl font-black tracking-wider">{p2Chips}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 訊息提示區 (固定不變) */}
+      <div className={`shrink-0 w-full max-w-4xl p-2 md:p-3 rounded-xl flex items-center space-x-2 text-sm md:text-base font-medium shadow-md transition-all duration-300
+        ${messageType === 'info' ? 'bg-blue-100 text-blue-800 border-l-4 border-blue-500' : ''}
+        ${messageType === 'success' ? 'bg-green-100 text-green-800 border-l-4 border-green-500' : ''}
+        ${messageType === 'error' ? 'bg-red-100 text-red-800 border-l-4 border-red-500' : ''}
+        ${messageType === 'warning' ? 'bg-orange-100 text-orange-900 border-l-4 border-orange-500' : ''}
+      `}>
+        {messageType === 'info' && <AlertTriangle size={20} className="shrink-0" />}
+        {messageType === 'success' && <CheckCircle2 size={20} className="shrink-0" />}
+        {messageType === 'error' && <XCircle size={20} className="shrink-0" />}
+        {messageType === 'warning' && <AlertTriangle size={20} className="shrink-0" />}
+        <span className="leading-tight">{message}</span>
+      </div>
+
+      {/* 遊戲桌面區 (固定不變) */}
+      <div className="shrink-0 w-full max-w-4xl bg-green-800 rounded-2xl p-4 md:p-6 border-4 md:border-8 border-green-950 shadow-2xl relative">
+        <div className="absolute inset-2 border border-green-700 rounded-xl pointer-events-none opacity-50"></div>
+        <div className="flex justify-center items-center space-x-3 md:space-x-10 relative z-10 min-h-[120px] md:min-h-[160px]">
+          {/* 柱子1 */}
+          <div className="flex flex-col items-center">
+            <span className="text-green-300 font-semibold mb-1 text-[10px] md:text-sm tracking-widest">MIN</span>
+            <CardUI card={cards[0]} hidden={gameState === 'start'} />
+          </div>
+
+          {/* 射門球 */}
+          <div className="flex flex-col items-center transform translate-y-2 md:translate-y-4">
+            <span className="text-yellow-400 font-bold mb-1 text-[10px] md:text-sm tracking-widest animate-pulse">TARGET</span>
+            <CardUI card={cards[2]} hidden={gameState !== 'result'} />
+          </div>
+
+          {/* 柱子2 */}
+          <div className="flex flex-col items-center">
+            <span className="text-green-300 font-semibold mb-1 text-[10px] md:text-sm tracking-widest">MAX</span>
+            <CardUI card={cards[1]} hidden={gameState === 'start'} />
+          </div>
+        </div>
+      </div>
+
+      {/* 動態操作區 (填滿剩餘空間，內部可捲動) */}
+      <div className="flex-1 w-full max-w-4xl min-h-0 flex flex-col justify-start items-center pb-2">
+        
+        {/* 押注區 */}
+        {gameState === 'betting' && (
+          <div className="w-full bg-white rounded-2xl shadow-xl p-4 flex flex-col items-center animate-fade-in-up mt-2">
+            <h2 className="text-base md:text-lg font-black text-slate-800 mb-2">💰 決定你的押注金額 💰</h2>
+            
+            <div className="text-4xl md:text-5xl font-black text-yellow-500 mb-3 drop-shadow-md">
+              {currentBet}
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-3">
+              <button onClick={() => {
+                const maxChips = currentPlayer === 1 ? p1Chips : p2Chips;
+                const minAllowed = Math.min(100, maxChips);
+                setCurrentBet(prev => Math.max(minAllowed, prev - 100));
+              }} className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-4 md:px-5 rounded-lg transition text-sm">- 100</button>
+              
+              <button onClick={() => {
+                const maxChips = currentPlayer === 1 ? p1Chips : p2Chips;
+                const maxAllowed = Math.min(1000, maxChips);
+                setCurrentBet(prev => Math.min(maxAllowed, prev + 100));
+              }} className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-1.5 px-4 md:px-5 rounded-lg transition text-sm">+ 100</button>
+            </div>
+
+            <div className="flex space-x-2 md:space-x-4 mb-3 md:mb-4">
+              <button onClick={() => {
+                const maxChips = currentPlayer === 1 ? p1Chips : p2Chips;
+                setCurrentBet(Math.min(100, maxChips));
+              }} 
+                className="bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold py-1.5 px-4 md:px-5 rounded-lg transition text-sm">
+                最小 (100)
+              </button>
+              <button onClick={() => {
+                const maxChips = currentPlayer === 1 ? p1Chips : p2Chips;
+                setCurrentBet(Math.min(1000, maxChips));
+              }} 
+                className="bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1.5 px-4 md:px-5 rounded-lg transition text-sm shadow-[0_0_10px_rgba(239,68,68,0.4)]">
+                最大 (1000)
+              </button>
+            </div>
+
+            <button 
+              onClick={confirmBet}
+              className="w-full md:w-2/3 bg-yellow-500 hover:bg-yellow-400 text-yellow-950 text-base md:text-lg py-2.5 rounded-xl font-black transition-colors shadow-lg"
+            >
+              確認押注並挑戰單字
+            </button>
+          </div>
+        )}
+
+        {/* 單字測驗區 */}
+        {(gameState === 'quiz' || gameState === 'answered') && currentQuestion && (
+          <div className="w-full bg-white rounded-2xl shadow-xl flex flex-col min-h-0 max-h-full animate-fade-in-up relative border-2 md:border-4 border-slate-800 mt-2">
+            
+            {/* 進度條倒數 */}
+            {gameState === 'quiz' && (
+              <div 
+                className="absolute top-0 left-0 h-1 bg-red-500 transition-all duration-1000 ease-linear z-10"
+                style={{ width: `${(timeLeft / 5) * 100}%` }}
+              />
+            )}
+            
+            <div className="shrink-0 bg-slate-800 p-2 md:p-3 text-center relative">
+              {/* 倒數計時顯示 */}
+              {gameState === 'quiz' && (
+                <div className="absolute top-2 right-2 flex items-center space-x-1 text-red-400 font-bold bg-slate-900 px-2 py-1 rounded-full shadow-inner text-[10px] md:text-xs">
+                  <Timer size={12} className={timeLeft <= 2 ? "animate-pulse text-red-500" : ""} />
+                  <span className={timeLeft <= 2 ? "text-red-500" : ""}>{timeLeft}s</span>
+                </div>
+              )}
+
+              <h2 className="text-slate-400 text-[10px] md:text-xs font-bold tracking-widest mb-1 uppercase">玩家 {currentPlayer} 的射門資格</h2>
+              <div className="text-xl md:text-3xl font-black text-white tracking-wide">
+                {currentQuestion.word}
+              </div>
+            </div>
+
+            {/* 選項區 (內部滾動) */}
+            <div className="flex-1 overflow-y-auto p-2 md:p-3 grid grid-cols-1 md:grid-cols-2 gap-2 bg-slate-50">
+              {currentQuestion.options.map((option, index) => {
+                // 動態判定選項顏色
+                let btnClass = "w-full p-2 md:p-3 text-left text-sm md:text-base font-bold bg-white border-2 rounded-xl transition-all shadow-sm flex items-center space-x-2 group";
+                
+                if (gameState === 'answered') {
+                  if (option === currentQuestion.correctAnswer) {
+                    btnClass += " border-green-500 bg-green-500 text-white"; // 正確答案：標示綠色
+                  } else if (option === selectedAnswer) {
+                    btnClass += " border-red-500 bg-red-500 text-white"; // 玩家選錯的：標示紅色
+                  } else {
+                    btnClass += " border-slate-200 text-slate-400 opacity-50"; // 沒選的錯誤選項：變淡
+                  }
+                } else {
+                  btnClass += " border-slate-200 text-slate-700 hover:border-blue-500 hover:bg-blue-50";
+                }
+
+                return (
+                  <button
+                    key={index}
+                    disabled={gameState === 'answered'}
+                    onClick={() => handleAnswer(option)}
+                    className={btnClass}
+                  >
+                    <div className={`shrink-0 w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm transition-colors ${gameState === 'answered' ? 'bg-white/20' : 'bg-slate-100 text-slate-500 group-hover:bg-blue-500 group-hover:text-white'}`}>
+                      {String.fromCharCode(65 + index)}
+                    </div>
+                    <span className="leading-snug">{option}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 對完答案後的繼續按鈕 */}
+            {gameState === 'answered' && (
+              <div className="shrink-0 p-3 md:p-4 bg-white border-t-2 border-slate-100">
+                 <button 
+                   onClick={handleContinueAfterAnswer}
+                   className={`w-full py-3 rounded-xl font-bold text-base md:text-xl transition-colors text-white shadow-lg ${selectedAnswer === currentQuestion.correctAnswer ? 'bg-green-600 hover:bg-green-500' : 'bg-red-600 hover:bg-red-500'}`}
+                 >
+                   {selectedAnswer === currentQuestion.correctAnswer ? '答對了！點擊準備射門 ⚽' : '確認結束回合 ❌'}
+                 </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* 遊戲結束結算畫面 */}
+      {(gameState === 'result' && (p1Chips <= 0 || p2Chips <= 0 || currentTurn >= maxRounds * 2)) && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 animate-fade-in p-4">
+          <div className="bg-white p-6 md:p-8 rounded-3xl text-center w-full max-w-md">
+            <h2 className="text-3xl md:text-4xl font-black text-red-600 mb-2 md:mb-4">🏆 遊戲結束！</h2>
+            
+            {p1Chips <= 0 || p2Chips <= 0 ? (
+              <p className="text-slate-600 mb-2 text-base md:text-lg">
+                {p1Chips <= 0 ? '玩家 1' : '玩家 2'} 破產了！把籌碼輸光光啦！
+              </p>
+            ) : (
+              <p className="text-slate-600 mb-2 text-base md:text-lg">
+                已達到最大局數限制 ({maxRounds} 局)！
+              </p>
+            )}
+
+            <div className="text-green-600 font-bold mb-6 text-xl md:text-2xl mt-4 bg-green-50 py-4 rounded-xl">
+              {p1Chips === p2Chips ? (
+                <span>🤝 雙方籌碼相同，平手！ 🤝</span>
+              ) : (
+                <span>🎉 恭喜 {p1Chips > p2Chips ? '玩家 1' : '玩家 2'} 獲勝！ 🎉</span>
+              )}
+            </div>
+
+            <button 
+              onClick={() => {
+                setP1Chips(1000);
+                setP2Chips(1000);
+                setCurrentPlayer(1);
+                setCurrentTurn(0);
+                setGameState('start');
+                setCards([null, null, null]);
+                setSelectedAnswer(null);
+                setNarrowGapIndices(generateNarrowGapIndices());
+                setMessage("新遊戲開始！雙方各拿到 1000 籌碼。請點擊「開始遊戲」。");
+                setMessageType('info');
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 md:py-4 rounded-xl font-bold text-lg md:text-xl transition-colors shadow-lg"
+            >
+              重新開始雙人對戰
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
